@@ -94,6 +94,24 @@ export function Header() {
           <h1 className="text-xl font-semibold text-gray-900">AI Agent Network</h1>
         </div>
 
+        {/* Navigation Links */}
+        <div className="flex items-center space-x-4">
+          <nav className="hidden md:flex items-center space-x-4">
+            <a href="/dashboard" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
+              Dashboard
+            </a>
+            <a href="/create-campaign" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
+              Create Campaign
+            </a>
+            <a href="/hcs-messages" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
+              HCS Messages
+            </a>
+            <a href="/validator" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
+              Validator
+            </a>
+          </nav>
+        </div>
+
         {/* Wallet Selector */}
         <div className="flex items-center space-x-4">
           {selectedWallet && (

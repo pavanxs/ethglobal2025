@@ -13,12 +13,12 @@ export interface HederaWallet {
 export async function getHardcodedWallets(): Promise<HederaWallet[]> {
   const wallets: HederaWallet[] = [];
   
-  // Load wallets from environment variables
+  // Load wallets from environment variables with your specific account IDs
   const walletConfigs = [
-    { envPrefix: 'WALLET_ONE', name: 'AI Agent Owner' },
-    { envPrefix: 'WALLET_TWO', name: 'Advertiser' },
-    { envPrefix: 'WALLET_THREE', name: 'Validator' },
-    { envPrefix: 'WALLET_FOUR', name: 'Extra Wallet' }
+    { envPrefix: 'WALLET_ONE', name: 'Tech Startup Advertiser', expectedAccountId: '0.0.6885334' },
+    { envPrefix: 'WALLET_TWO', name: 'E-commerce Business', expectedAccountId: '0.0.6916595' },
+    { envPrefix: 'WALLET_THREE', name: 'AI Agent Developer', expectedAccountId: '0.0.6916585' },
+    { envPrefix: 'WALLET_FOUR', name: 'Content Validator', expectedAccountId: '0.0.6916597' }
   ];
 
   walletConfigs.forEach((config, index) => {
@@ -39,6 +39,14 @@ export async function getHardcodedWallets(): Promise<HederaWallet[]> {
       } catch (error) {
         console.error(`Failed to load ${config.name}:`, error);
       }
+    } else {
+      // Fallback to hardcoded account ID if env vars not set (for demo purposes)
+      console.log(`Environment variables not set for ${config.name}, using hardcoded account ID`);
+      wallets.push({
+        id: `wallet_${index + 1}`,
+        name: config.name,
+        accountIdString: config.expectedAccountId,
+      });
     }
   });
   
