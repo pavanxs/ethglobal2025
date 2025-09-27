@@ -1,3 +1,5 @@
+import { WalletProvider } from "@/lib/contexts/wallet-context";
+import { Header } from "@/components/header";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -27,7 +29,12 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <WalletProvider>
+          <Header />
+          <main className="min-h-screen">
+            {children}
+          </main>
+        </WalletProvider>
       </body>
     </html>
   );
