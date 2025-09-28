@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useWallet } from '@/lib/contexts/wallet-context';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -12,7 +12,7 @@ interface HCSMessage {
   consensus_timestamp: string;
   message: string;
   decodedMessage: string;
-  parsedData: any;
+  parsedData: Record<string, unknown>;
   timestamp: string;
   sequence_number: number;
 }
@@ -35,15 +35,7 @@ export default function HCSMessages() {
   const [error, setError] = useState<string | null>(null);
 
   // Load HCS messages when wallet changes
-  useEffect(() => {
-    if (selectedWallet?.accountIdString) {
-      loadHCSMessages();
-    } else {
-      setHcsData(null);
-    }
-  }, [selectedWallet?.accountIdString]);
-
-  const loadHCSMessages = async () => {
+  const loadHCSMessages = useCallback(async () => {
     if (!selectedWallet?.accountIdString) return;
     
     setIsLoading(true);
@@ -64,7 +56,15 @@ export default function HCSMessages() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [selectedWallet?.accountIdString]);
+
+  useEffect(() => {
+    if (selectedWallet?.accountIdString) {
+      loadHCSMessages();
+    } else {
+      setHcsData(null);
+    }
+  }, [selectedWallet?.accountIdString, loadHCSMessages]);
 
   const formatTimestamp = (timestamp: string) => {
     return new Date(timestamp).toLocaleString();
@@ -170,11 +170,11 @@ export default function HCSMessages() {
                 <div key={index} className="border rounded-lg p-4">
                   <div className="flex justify-between items-start mb-3">
                     <div className="flex items-center gap-2">
-                      {message.parsedData?.type && (
-                        <Badge className={getMessageTypeColor(message.parsedData.type)}>
-                          {message.parsedData.type.replace('_', ' ')}
+                      {message.parsedData?.type ? (
+                        <Badge className={getMessageTypeColor(String(message.parsedData.type))}>
+                          {String(message.parsedData.type).replace('_', ' ')}
                         </Badge>
-                      )}
+                      ) : null}
                       <div className="flex items-center gap-1 text-sm text-gray-500">
                         <Clock className="h-3 w-3" />
                         {formatTimestamp(message.timestamp)}
@@ -189,39 +189,39 @@ export default function HCSMessages() {
                     <div className="space-y-3">
                       <div>
                         <h4 className="font-semibold text-lg">
-                          {message.parsedData.data?.name || 'Campaign'}
+                          {String((message.parsedData as any).data?.name) || 'Campaign'}
                         </h4>
                         <p className="text-sm text-gray-600">
-                          Campaign ID: {message.parsedData.campaignId}
+                          Campaign ID: {String((message.parsedData as any).campaignId)}
                         </p>
                       </div>
 
-                      {message.parsedData.data?.adContent && (
+                      {(message.parsedData as any).data?.adContent && (
                         <div>
                           <p className="text-sm font-medium text-gray-700 mb-1">Ad Content:</p>
                           <p className="text-sm text-gray-600 bg-gray-50 p-2 rounded">
-                            {message.parsedData.data.adContent}
+                            {String((message.parsedData as any).data.adContent)}
                           </p>
                         </div>
                       )}
 
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                        {message.parsedData.data?.contentCategory && (
+                        {(message.parsedData as any).data?.contentCategory && (
                           <div>
                             <p className="font-medium text-gray-700">Category:</p>
-                            <p className="text-gray-600">{message.parsedData.data.contentCategory}</p>
+                            <p className="text-gray-600">{String((message.parsedData as any).data.contentCategory)}</p>
                           </div>
                         )}
-                        {message.parsedData.data?.budget && (
+                        {(message.parsedData as any).data?.budget && (
                           <div>
                             <p className="font-medium text-gray-700">Budget:</p>
-                            <p className="text-gray-600">₳{message.parsedData.data.budget}</p>
+                            <p className="text-gray-600">₳{String((message.parsedData as any).data.budget)}</p>
                           </div>
                         )}
-                        {message.parsedData.data?.status && (
+                        {(message.parsedData as any).data?.status && (
                           <div>
                             <p className="font-medium text-gray-700">Status:</p>
-                            <p className="text-gray-600">{message.parsedData.data.status}</p>
+                            <p className="text-gray-600">{String((message.parsedData as any).data.status)}</p>
                           </div>
                         )}
                         {message.parsedData.data?.bidAmount && (

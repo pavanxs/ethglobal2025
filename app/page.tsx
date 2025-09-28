@@ -26,15 +26,6 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Load campaigns when wallet changes
-  useEffect(() => {
-    if (selectedWallet?.accountIdString) {
-      loadCampaigns();
-    } else {
-      setCampaigns([]);
-    }
-  }, [selectedWallet?.accountIdString]);
-
   const loadCampaigns = async () => {
     if (!selectedWallet?.accountIdString) return;
     
@@ -51,6 +42,15 @@ export default function Home() {
       setIsLoading(false);
     }
   };
+
+  // Load campaigns when wallet changes
+  useEffect(() => {
+    if (selectedWallet?.accountIdString) {
+      loadCampaigns();
+    } else {
+      setCampaigns([]);
+    }
+  }, [selectedWallet?.accountIdString, loadCampaigns]);
 
   // Calculate summary metrics
   const totalSpent = campaigns.reduce((sum, campaign) => sum + parseFloat(campaign.spent || '0'), 0);
@@ -177,7 +177,6 @@ export default function Home() {
               ) : (
                 <div className="space-y-4">
                   {campaigns.slice(0, 3).map((campaign) => {
-                    const budget = parseFloat(campaign.budget || '0');
                     const spent = parseFloat(campaign.spent || '0');
                     const impressions = parseInt(campaign.impressions || '0');
                     const linkOpens = parseInt(campaign.linkOpens || '0');

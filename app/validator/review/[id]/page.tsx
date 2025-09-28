@@ -13,6 +13,7 @@ import { ArrowLeft, ExternalLink, AlertTriangle, CheckCircle, XCircle } from 'lu
 import Link from 'next/link';
 
 // Mock ad data - in real app this would come from API
+/*
 const mockAdData = {
   '1': {
     id: '1',
@@ -51,6 +52,7 @@ const mockAdData = {
     targetingKeywords: ['gaming', 'esports', 'peripherals', 'mechanical keyboard', 'RGB']
   }
 };
+*/
 
 const contentCategories = [
   { 
@@ -95,7 +97,7 @@ export default function AdReview() {
   const router = useRouter();
   const params = useParams();
   const { selectedWallet } = useWallet();
-  const [ad, setAd] = useState<any>(null);
+  const [ad, setAd] = useState<Record<string, unknown> | null>(null);
   const [selectedRating, setSelectedRating] = useState('');
   const [comments, setComments] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -107,7 +109,7 @@ export default function AdReview() {
     if (adId && selectedWallet?.accountIdString && isValidator) {
       loadAdData();
     }
-  }, [adId, selectedWallet?.accountIdString]);
+  }, [adId, selectedWallet?.accountIdString, isValidator, loadAdData]);
 
   const loadAdData = async () => {
     if (!adId || !selectedWallet?.accountIdString) return;
@@ -364,7 +366,7 @@ export default function AdReview() {
                     <span className="text-sm font-medium text-yellow-800">Rating Mismatch</span>
                   </div>
                   <p className="text-xs text-yellow-700 mt-1">
-                    Your rating ({selectedRating}) differs from advertiser's submission ({ad.advertiserSubmittedCategory}).
+                    Your rating ({selectedRating}) differs from advertiser&apos;s submission ({ad.advertiserSubmittedCategory}).
                     Please provide comments explaining the reason.
                   </p>
                 </div>

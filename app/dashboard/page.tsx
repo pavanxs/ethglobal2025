@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useWallet } from '@/lib/contexts/wallet-context';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -27,14 +27,7 @@ export default function AdvertiserDashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Load campaigns when wallet changes
-  useEffect(() => {
-    if (selectedWallet?.accountIdString) {
-      loadCampaigns();
-    }
-  }, [selectedWallet?.accountIdString]);
-
-  const loadCampaigns = async () => {
+  const loadCampaigns = useCallback(async () => {
     if (!selectedWallet?.accountIdString) return;
     
     setIsLoading(true);
@@ -49,7 +42,14 @@ export default function AdvertiserDashboard() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [selectedWallet?.accountIdString]);
+
+  // Load campaigns when wallet changes
+  useEffect(() => {
+    if (selectedWallet?.accountIdString) {
+      loadCampaigns();
+    }
+  }, [selectedWallet?.accountIdString, loadCampaigns]);
 
   // Calculate summary metrics
   const totalSpent = campaigns.reduce((sum, campaign) => sum + parseFloat(campaign.spent || '0'), 0);

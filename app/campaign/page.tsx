@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useState, useEffect, useCallback } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { useWallet } from '@/lib/contexts/wallet-context';
 import { getCampaign, Campaign } from '@/lib/api';
 import { Button } from '@/components/ui/button';
@@ -52,7 +52,6 @@ const getStatusColor = (status: string) => {
 };
 
 export default function CampaignDetail() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const { selectedWallet } = useWallet();
   const [campaign, setCampaign] = useState<Campaign | null>(null);
@@ -62,14 +61,7 @@ export default function CampaignDetail() {
   // Get campaign ID from URL params
   const campaignId = searchParams.get('id');
 
-  // Load campaign data
-  useEffect(() => {
-    if (campaignId && selectedWallet?.accountIdString) {
-      loadCampaign();
-    }
-  }, [campaignId, selectedWallet?.accountIdString]);
-
-  const loadCampaign = async () => {
+  const loadCampaign = useCallback(async () => {
     if (!campaignId || !selectedWallet?.accountIdString) return;
     
     setIsLoading(true);
@@ -84,7 +76,14 @@ export default function CampaignDetail() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [campaignId, selectedWallet?.accountIdString]);
+
+  // Load campaign data
+  useEffect(() => {
+    if (campaignId && selectedWallet?.accountIdString) {
+      loadCampaign();
+    }
+  }, [campaignId, selectedWallet?.accountIdString, loadCampaign]);
 
   const handlePauseCampaign = async () => {
     if (!campaign) return;
@@ -386,7 +385,7 @@ export default function CampaignDetail() {
                     )}
                     {campaign.validatorComments && (
                       <p className="text-green-700 text-xs">
-                        Validator feedback: "{campaign.validatorComments}"
+                        Validator feedback: &quot;{campaign.validatorComments}&quot;
                       </p>
                     )}
                   </div>
@@ -402,7 +401,7 @@ export default function CampaignDetail() {
                     )}
                     {campaign.validatorComments && (
                       <p className="text-red-700 text-xs">
-                        Validator feedback: "{campaign.validatorComments}"
+                        Validator feedback: &quot;{campaign.validatorComments}&quot;
                       </p>
                     )}
                   </div>

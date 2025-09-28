@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db, campaigns, users } from '@/lib/db';
-import { eq, and } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import { 
   submitCampaignMessage, 
   createCampaignHCSData 

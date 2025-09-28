@@ -48,7 +48,7 @@ export default function ValidatorDashboard() {
     if (selectedWallet?.accountIdString && isValidator) {
       loadAdsForReview();
     }
-  }, [selectedWallet?.accountIdString, isValidator]);
+  }, [selectedWallet?.accountIdString, isValidator, loadAdsForReview]);
 
   const loadAdsForReview = async () => {
     if (!selectedWallet?.accountIdString) return;

@@ -26,12 +26,12 @@ export async function POST(request: NextRequest) {
     }));
 
     // Use upsertRecords for text-based records with automatic embedding
-    const upsertResponse = await targetNamespace.upsertRecords(transformedRecords);
+    await targetNamespace.upsertRecords(transformedRecords);
     
 
     return NextResponse.json({
       success: true,
-      upsertedCount: upsertResponse?.upsertedCount || records.length,
+      upsertedCount: records.length,
       message: 'Records upserted successfully',
     });
 

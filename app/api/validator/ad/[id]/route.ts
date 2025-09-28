@@ -5,8 +5,9 @@ import { eq } from 'drizzle-orm';
 // GET /api/validator/ad/[id] - Get specific ad for review
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     const { searchParams } = new URL(request.url);
     const validatorAccountId = searchParams.get('validatorAccountId');
@@ -26,7 +27,7 @@ export async function GET(
 
     // Get the specific campaign
     const campaign = await db.query.campaigns.findFirst({
-      where: eq(campaigns.id, params.id),
+      where: eq(campaigns.id, id),
       with: {
         user: {
           columns: {

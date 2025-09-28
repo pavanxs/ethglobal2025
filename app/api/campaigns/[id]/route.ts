@@ -5,8 +5,9 @@ import { eq, and } from 'drizzle-orm';
 // GET /api/campaigns/[id] - Get specific campaign details
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     const { searchParams } = new URL(request.url);
     const accountId = searchParams.get('accountId');
@@ -27,7 +28,7 @@ export async function GET(
     // Get campaign
     const campaign = await db.query.campaigns.findFirst({
       where: and(
-        eq(campaigns.id, params.id),
+        eq(campaigns.id, id),
         eq(campaigns.userId, user.id)
       )
     });
@@ -46,8 +47,9 @@ export async function GET(
 // PUT /api/campaigns/[id] - Update campaign
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     const body = await request.json();
     const { accountId, status, ...updateData } = body;
@@ -73,7 +75,7 @@ export async function PUT(
         updatedAt: new Date()
       })
       .where(and(
-        eq(campaigns.id, params.id),
+        eq(campaigns.id, id),
         eq(campaigns.userId, user.id)
       ))
       .returning();
@@ -95,8 +97,9 @@ export async function PUT(
 // DELETE /api/campaigns/[id] - Delete campaign
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     const { searchParams } = new URL(request.url);
     const accountId = searchParams.get('accountId');
@@ -117,7 +120,7 @@ export async function DELETE(
     // Delete campaign
     const [deletedCampaign] = await db.delete(campaigns)
       .where(and(
-        eq(campaigns.id, params.id),
+        eq(campaigns.id, id),
         eq(campaigns.userId, user.id)
       ))
       .returning();
@@ -128,7 +131,7 @@ export async function DELETE(
 
     return NextResponse.json({ 
       message: 'Campaign deleted successfully',
-      campaignId: params.id 
+      campaignId: id 
     });
   } catch (error) {
     console.error('Error deleting campaign:', error);

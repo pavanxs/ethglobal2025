@@ -4,7 +4,6 @@ import {
   PrivateKey,
   TopicCreateTransaction,
   TopicMessageSubmitTransaction,
-  Status
 } from '@hashgraph/sdk';
 
 export interface HCSTopicResult {
@@ -170,7 +169,7 @@ export async function queryTopicMessages(topicId: string, limit: number = 10) {
     
     if (data.messages && data.messages.length > 0) {
       // Decode messages from base64 and parse JSON
-      const decodedMessages = data.messages.map((msg: any) => {
+      const decodedMessages = data.messages.map((msg: Record<string, unknown>) => {
         try {
           const messageContent = Buffer.from(msg.message, 'base64').toString('utf8');
           const parsedContent = JSON.parse(messageContent);
@@ -217,7 +216,7 @@ export function createCampaignHCSData(
   type: CampaignHCSData['type'],
   campaignId: string,
   accountId: string,
-  campaignData: any
+  campaignData: Record<string, unknown>
 ): CampaignHCSData {
   return {
     type,

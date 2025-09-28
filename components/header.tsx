@@ -22,7 +22,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -102,6 +101,9 @@ export function Header() {
             </a>
             <a href="/create-campaign" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
               Create Campaign
+            </a>
+            <a href="/demochat" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
+              Demo Chat
             </a>
             <a href="/hcs-messages" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
               HCS Messages

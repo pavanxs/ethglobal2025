@@ -93,12 +93,13 @@ export default function CreateCampaign() {
       });
       
       // Show success message with HCS info if available
-      if (result && 'hcs' in result && result.hcs?.topicId) {
+      const resultWithHCS = result as unknown as { campaign: { id: string }, hcs?: { topicId?: string, messageId?: string, hashscanUrl?: string } };
+      if (result && 'hcs' in result && resultWithHCS.hcs?.topicId) {
         console.log('✅ Campaign created and submitted to HCS:', {
-          campaignId: result.campaign.id,
-          topicId: result.hcs.topicId,
-          messageId: result.hcs.messageId,
-          hashscanUrl: result.hcs.hashscanUrl
+          campaignId: resultWithHCS.campaign.id,
+          topicId: resultWithHCS.hcs.topicId,
+          messageId: resultWithHCS.hcs.messageId,
+          hashscanUrl: resultWithHCS.hcs.hashscanUrl
         });
       }
       
@@ -356,7 +357,7 @@ export default function CreateCampaign() {
                 <div>
                   <span className="font-medium">Ad Preview:</span>
                   <p className="text-gray-600 text-sm mt-1 italic">
-                    "{formData.adContent}"
+                    &quot;{formData.adContent}&quot;
                   </p>
                 </div>
               )}

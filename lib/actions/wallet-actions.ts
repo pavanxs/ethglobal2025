@@ -14,6 +14,7 @@ export async function getHardcodedWallets(): Promise<HederaWallet[]> {
   const wallets: HederaWallet[] = [];
   
   // Load wallets from environment variables with your specific account IDs
+  
   const walletConfigs = [
     { envPrefix: 'WALLET_ONE', name: 'Tech Startup Advertiser', expectedAccountId: '0.0.6885334' },
     { envPrefix: 'WALLET_TWO', name: 'E-commerce Business', expectedAccountId: '0.0.6916595' },
