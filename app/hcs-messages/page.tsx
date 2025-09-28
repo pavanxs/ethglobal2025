@@ -12,9 +12,25 @@ interface HCSMessage {
   consensus_timestamp: string;
   message: string;
   decodedMessage: string;
-  parsedData: Record<string, unknown>;
+  parsedData: ParsedHCSData;
   timestamp: string;
   sequence_number: number;
+}
+
+interface CampaignData {
+  name?: string;
+  adContent?: string;
+  contentCategory?: string;
+  budget?: string;
+  status?: string;
+  bidAmount?: string;
+  targetingKeywords?: string[];
+}
+
+interface ParsedHCSData {
+  type?: string;
+  campaignId?: string;
+  data?: CampaignData;
 }
 
 interface HCSResponse {
@@ -185,46 +201,46 @@ export default function HCSMessages() {
                     </div>
                   </div>
 
-                  {message.parsedData ? (
+                  {message.parsedData.data ? (
                     <div className="space-y-3">
                       <div>
                         <h4 className="font-semibold text-lg">
-                          {String((message.parsedData as any).data?.name) || 'Campaign'}
+                          {message.parsedData.data.name || 'Campaign'}
                         </h4>
                         <p className="text-sm text-gray-600">
-                          Campaign ID: {String((message.parsedData as any).campaignId)}
+                          Campaign ID: {message.parsedData.campaignId}
                         </p>
                       </div>
 
-                      {(message.parsedData as any).data?.adContent && (
+                      {message.parsedData.data.adContent && (
                         <div>
                           <p className="text-sm font-medium text-gray-700 mb-1">Ad Content:</p>
                           <p className="text-sm text-gray-600 bg-gray-50 p-2 rounded">
-                            {String((message.parsedData as any).data.adContent)}
+                            {message.parsedData.data.adContent}
                           </p>
                         </div>
                       )}
 
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                        {(message.parsedData as any).data?.contentCategory && (
+                        {message.parsedData.data.contentCategory && (
                           <div>
                             <p className="font-medium text-gray-700">Category:</p>
-                            <p className="text-gray-600">{String((message.parsedData as any).data.contentCategory)}</p>
+                            <p className="text-gray-600">{message.parsedData.data.contentCategory}</p>
                           </div>
                         )}
-                        {(message.parsedData as any).data?.budget && (
+                        {message.parsedData.data.budget && (
                           <div>
                             <p className="font-medium text-gray-700">Budget:</p>
-                            <p className="text-gray-600">₳{String((message.parsedData as any).data.budget)}</p>
+                            <p className="text-gray-600">₳{message.parsedData.data.budget}</p>
                           </div>
                         )}
-                        {(message.parsedData as any).data?.status && (
+                        {message.parsedData.data.status && (
                           <div>
                             <p className="font-medium text-gray-700">Status:</p>
-                            <p className="text-gray-600">{String((message.parsedData as any).data.status)}</p>
+                            <p className="text-gray-600">{message.parsedData.data.status}</p>
                           </div>
                         )}
-                        {message.parsedData.data?.bidAmount && (
+                        {message.parsedData.data.bidAmount && (
                           <div>
                             <p className="font-medium text-gray-700">Bid Amount:</p>
                             <p className="text-gray-600">₳{message.parsedData.data.bidAmount}</p>
@@ -232,7 +248,7 @@ export default function HCSMessages() {
                         )}
                       </div>
 
-                      {message.parsedData.data?.targetingKeywords && (
+                      {message.parsedData.data.targetingKeywords && (
                         <div>
                           <p className="text-sm font-medium text-gray-700 mb-2">Keywords:</p>
                           <div className="flex flex-wrap gap-1">

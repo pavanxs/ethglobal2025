@@ -12,6 +12,19 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { ArrowLeft, ExternalLink, AlertTriangle, CheckCircle, XCircle } from 'lucide-react';
 import Link from 'next/link';
 
+interface Ad {
+  id: string;
+  campaignId: string;
+  campaignName: string;
+  adContent: string;
+  trackedLink: string;
+  advertiserSubmittedCategory: string;
+  advertiserAccountId: string;
+  submittedAt: string;
+  status: string;
+  targetingKeywords: string[];
+}
+
 // Mock ad data - in real app this would come from API
 /*
 const mockAdData = {
@@ -97,7 +110,7 @@ export default function AdReview() {
   const router = useRouter();
   const params = useParams();
   const { selectedWallet } = useWallet();
-  const [ad, setAd] = useState<Record<string, unknown> | null>(null);
+  const [ad, setAd] = useState<Ad | null>(null);
   const [selectedRating, setSelectedRating] = useState('');
   const [comments, setComments] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -345,7 +358,7 @@ export default function AdReview() {
                       <RadioGroupItem value={category.value} id={category.value} className="mt-1" />
                       <div className="flex-1">
                         <label htmlFor={category.value} className="cursor-pointer">
-                          <Badge className={category.color} size="sm">
+                          <Badge className={category.color}>
                             {category.label}
                           </Badge>
                           <p className="text-xs text-gray-600 mt-1">

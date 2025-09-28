@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useWallet } from '@/lib/contexts/wallet-context';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -43,14 +43,7 @@ export default function ValidatorDashboard() {
   // Filter to only show validator accounts
   const isValidator = selectedWallet?.name.includes('Validator') || selectedWallet?.accountIdString === '0.0.6916597';
 
-  // Load ads for review when wallet changes
-  useEffect(() => {
-    if (selectedWallet?.accountIdString && isValidator) {
-      loadAdsForReview();
-    }
-  }, [selectedWallet?.accountIdString, isValidator, loadAdsForReview]);
-
-  const loadAdsForReview = async () => {
+  const loadAdsForReview = useCallback(async () => {
     if (!selectedWallet?.accountIdString) return;
     
     setIsLoading(true);
@@ -71,7 +64,14 @@ export default function ValidatorDashboard() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [selectedWallet?.accountIdString]);
+
+  // Load ads for review when wallet changes
+  useEffect(() => {
+    if (selectedWallet?.accountIdString && isValidator) {
+      loadAdsForReview();
+    } 
+  }, [selectedWallet?.accountIdString, isValidator, loadAdsForReview]);
 
   if (!selectedWallet) {
     return (
@@ -246,7 +246,7 @@ export default function ValidatorDashboard() {
                     </div>
                     <div>
                       <span className="font-medium text-gray-700">Submitted Category:</span>
-                      <Badge className={getCategoryColor(ad.advertiserSubmittedCategory)} size="sm">
+                      <Badge className={getCategoryColor(ad.advertiserSubmittedCategory)}>
                         {ad.advertiserSubmittedCategory}
                       </Badge>
                     </div>
