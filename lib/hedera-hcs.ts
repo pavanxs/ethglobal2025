@@ -171,22 +171,22 @@ export async function queryTopicMessages(topicId: string, limit: number = 10) {
       // Decode messages from base64 and parse JSON
       const decodedMessages = data.messages.map((msg: Record<string, unknown>) => {
         try {
-          const messageContent = Buffer.from(msg.message, 'base64').toString('utf8');
+          const messageContent = Buffer.from(msg.message as string, 'base64').toString('utf8');
           const parsedContent = JSON.parse(messageContent);
           
           return {
             ...msg,
             decodedMessage: messageContent,
             parsedData: parsedContent,
-            timestamp: new Date(msg.consensus_timestamp * 1000).toISOString()
+            timestamp: new Date((msg.consensus_timestamp as number) * 1000).toISOString()
           };
         } catch (parseError) {
           console.warn('Failed to parse message:', parseError);
           return {
             ...msg,
-            decodedMessage: Buffer.from(msg.message, 'base64').toString('utf8'),
+            decodedMessage: Buffer.from(msg.message as string, 'base64').toString('utf8'),
             parsedData: null,
-            timestamp: new Date(msg.consensus_timestamp * 1000).toISOString()
+            timestamp: new Date((msg.consensus_timestamp as number) * 1000).toISOString()
           };
         }
       });
@@ -224,14 +224,14 @@ export function createCampaignHCSData(
     campaignId,
     accountId,
     data: {
-      name: campaignData.name,
-      adContent: campaignData.adContent,
-      trackedLink: campaignData.trackedLink,
-      contentCategory: campaignData.advertiserSubmittedCategory,
-      budget: campaignData.budget,
-      bidAmount: campaignData.bidAmount,
-      targetingKeywords: campaignData.targetingKeywords,
-      status: campaignData.status
+      name: campaignData.name as string,
+      adContent: campaignData.adContent as string,
+      trackedLink: campaignData.trackedLink as string,
+      contentCategory: campaignData.advertiserSubmittedCategory as string,
+      budget: campaignData.budget as string,
+      bidAmount: campaignData.bidAmount as string,
+      targetingKeywords: campaignData.targetingKeywords as string[],
+      status: campaignData.status as string
     }
   };
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useWallet } from '@/lib/contexts/wallet-context';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -26,7 +26,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const loadCampaigns = async () => {
+  const loadCampaigns = useCallback(async () => {
     if (!selectedWallet?.accountIdString) return;
     
     setIsLoading(true);
@@ -41,7 +41,7 @@ export default function Home() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [selectedWallet?.accountIdString]);
 
   // Load campaigns when wallet changes
   useEffect(() => {

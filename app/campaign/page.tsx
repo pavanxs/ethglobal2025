@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useWallet } from '@/lib/contexts/wallet-context';
 import { getCampaign, Campaign } from '@/lib/api';
@@ -51,7 +51,15 @@ const getStatusColor = (status: string) => {
   }
 };
 
-export default function CampaignDetail() {
+export default function CampaignDetailPage() {
+  return (
+    <Suspense fallback={<div>Loading campaign details...</div>}>
+      <CampaignDetail />
+    </Suspense>
+  );
+}
+
+function CampaignDetail() {
   const searchParams = useSearchParams();
   const { selectedWallet } = useWallet();
   const [campaign, setCampaign] = useState<Campaign | null>(null);
