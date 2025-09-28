@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useWallet } from '@/lib/contexts/wallet-context';
 import { Button } from '@/components/ui/button';
@@ -118,13 +118,9 @@ export default function AdReview() {
 
   const adId = params.id as string;
 
-  useEffect(() => {
-    if (adId && selectedWallet?.accountIdString && isValidator) {
-      loadAdData();
-    }
-  }, [adId, selectedWallet?.accountIdString, isValidator, loadAdData]);
+  const isValidator = selectedWallet?.name.includes('Validator') || selectedWallet?.accountIdString === '0.0.6916597';
 
-  const loadAdData = async () => {
+  const loadAdData = useCallback(async () => {
     if (!adId || !selectedWallet?.accountIdString) return;
     
     try {
@@ -140,9 +136,13 @@ export default function AdReview() {
       console.error('Error loading ad data:', error);
       setAd(null);
     }
-  };
+  }, [adId, selectedWallet?.accountIdString]);
 
-  const isValidator = selectedWallet?.name.includes('Validator') || selectedWallet?.accountIdString === '0.0.6916597';
+  useEffect(() => {
+    if (adId && selectedWallet?.accountIdString && isValidator) {
+      loadAdData();
+    }
+  }, [adId, selectedWallet?.accountIdString, isValidator, loadAdData]);
 
   if (!selectedWallet || !isValidator) {
     return (
@@ -221,7 +221,7 @@ export default function AdReview() {
     return categoryInfo?.color || 'bg-gray-100 text-gray-800';
   };
 
-  const isRatingMismatch = selectedRating && selectedRating !== ad.advertiserSubmittedCategory;
+  const isRatingMismatch = Boolean(selectedRating) && selectedRating !== ad.advertiserSubmittedCategory;
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
